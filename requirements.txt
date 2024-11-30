@@ -5,3 +5,7 @@ psycopg2-binary
 google-generativeai
 jupyter
 ipykernel
+fastapi
+pydantic
+sqlalchemy
+uvicorn

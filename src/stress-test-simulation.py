@@ -146,12 +146,12 @@ print(f"Total months before funds run out: {months}")
 print('\n')
 print(f"Setting monthly income to 0...")
 
-income_salary = 0  
+# income_salary = 0  
 
 # Simulation variables
 savings = total_savings
 investments = total_investments
-income = income_salary
+income = 0
 months = 0
 print(f"Initial savings: ${savings}")
 print(f"Initial investments: ${investments}")
@@ -188,6 +188,92 @@ while True:
 
 print(f"Total months before funds run out: {months}")
 print(result)
+
+# Financial resilience score
+
+# Calculate the occupation score out of 25%
+# get the occupation of the user from the database
+try:
+    conn = psycopg2.connect(conn_params)
+    cursor = conn.cursor()
+    
+    cursor.execute("""
+        SELECT job FROM users WHERE user_id = %s
+    """, (user_id,))
+    occupation = cursor.fetchone()
+except psycopg2.DatabaseError as e:
+    print(f"Error: {e}")
+finally:
+    if cursor:
+        cursor.close()
+    if conn:
+        conn.close()
+
+occupation = occupation[0]
+# Using LLM, categorise the occupation into blue or white collar 
+import os
+import google.generativeai as genai
+
+genai.configure(api_key=os.environ["GEMINI_API_KEY"])
+
+def get_completions(system_prompt, text):
+    generation_config = {
+        "temperature": 0.7,
+        "top_p": 0.95,
+        "top_k": 40,
+        "max_output_tokens": 8192,
+        "response_mime_type": "text/plain",
+    }
+    model = genai.GenerativeModel(
+        model_name="gemini-1.5-pro",
+        generation_config=generation_config,
+        system_instruction=system_prompt
+    )
+    response = model.generate_content(text)
+    return response.text
+system_prompt = "Categorize the following occupation into one of blue collar, white collar. If blue collar, output 0.5. If white collar, output 1."
+text = f"Occupation: {occupation}"
+
+occupation_score = int(get_completions(system_prompt, text)) * 25
+
+# Calculate the debt service ratio (DSR) score out of 25%
+# Calculate the DSR
+total_debt = loans_mortgage + loans_car_loan + loans_personal_loan + loans_credit_card_debt
+dsr_score = total_debt / income_salary
+if dsr_score >= 0.4:
+    dsr_score = 0.33
+elif 0.2 <= dsr_score < 0.39:
+    dsr_score = 0.66
+else:
+    dsr_score = 1
+dsr_score = dsr_score * 25 
+
+# Calculate the savings score out of 25%
+savings_score = total_savings / income_salary
+if savings_score >= 6:
+    savings_score = 1
+elif 3 <= savings_score < 6:
+    savings_score = 0.66
+else:
+    savings_score = 0.33
+savings_score = savings_score * 25
+
+# Calculate the cash flow score out of 25%
+cash_flow_score = total_monthly_expenses / income_salary
+if cash_flow_score >= 0.8:
+    cash_flow_score = 0.33
+elif 0.4 <= cash_flow_score < 0.79:
+    cash_flow_score = 0.66
+else:
+    cash_flow_score = 1
+cash_flow_score = cash_flow_score * 25
+
+# Calculate the financial resilience score
+financial_resilience_score = occupation_score + dsr_score + savings_score + cash_flow_score
+
+print(f"Final score: {financial_resilience_score}")
+result["financial_resilience_score"] = f"{financial_resilience_score}%"
+
 # Prepare data for database insertion
 result_json = json.dumps(result)
 

@@ -15,14 +15,12 @@ async def root():
 
 @app.post("/api/get_trxn_viz/")
 async def trxn_viz(req: VizRequest):
-    print(req)
     data = await get_trxn_viz(req.user_id, req.monthly)
 
     return data
 
 @app.post("/api/get_trxn_summary/")
-async def trxn_viz(req: VizRequest):
-    print(req)
-    data = await get_trxn_viz(req.user_id, req.monthly)
+async def trxn_summary(req: VizRequest):
+    data = await get_trxn_summary(req.user_id, req.monthly)
 
     return data

@@ -136,7 +136,7 @@ async def get_trxn_summary(user_id, monthly=1):
                 groceries = get_nearby_places(location, "groceries budget-friendly")
 
                 message = f"""Based on the previous recommendation on Groceries and the list of budget-friendly groceries near your place at {location},
-                generate a new recommendation which suggests some these places.
+                generate a new recommendation which suggests some these places in one excerpt.
 
                 #PREVIOUS RECOMMENDATION:
                 {v['recommendation']}

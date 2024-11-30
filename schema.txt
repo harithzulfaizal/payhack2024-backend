@@ -1,0 +1,100 @@
+Database schema
+Table: users
+  - user_id: integer, Nullable: NO, Default: nextval('users_user_id_seq'::regclass)
+  - date_of_birth: date, Nullable: YES, Default: None
+  - is_active: boolean, Nullable: YES, Default: true
+  - is_verified: boolean, Nullable: YES, Default: false
+  - last_login: timestamp without time zone, Nullable: YES, Default: None
+  - password_reset_expiration: timestamp without time zone, Nullable: YES, Default: None
+  - preferences: json, Nullable: YES, Default: None
+  - loyalty_points: integer, Nullable: YES, Default: 0
+  - create_date: timestamp without time zone, Nullable: YES, Default: CURRENT_TIMESTAMP
+  - updated_date: timestamp without time zone, Nullable: YES, Default: CURRENT_TIMESTAMP
+  - deleted_date: timestamp without time zone, Nullable: YES, Default: None
+  - address_line_2: text, Nullable: YES, Default: None
+  - city: character varying, Nullable: YES, Default: None
+  - state: character varying, Nullable: YES, Default: None
+  - postal_code: character varying, Nullable: YES, Default: None
+  - country: character varying, Nullable: YES, Default: None
+  - timezone: character varying, Nullable: YES, Default: None
+  - subscription_status: character varying, Nullable: YES, Default: 'free'::character varying
+  - language: character varying, Nullable: YES, Default: 'en'::character varying
+  - role: character varying, Nullable: YES, Default: 'user'::character varying
+  - first_name: character varying, Nullable: NO, Default: None
+  - last_name: character varying, Nullable: NO, Default: None
+  - middle_name: character varying, Nullable: YES, Default: None
+  - email: character varying, Nullable: NO, Default: None
+  - password: character varying, Nullable: NO, Default: None
+  - password_reset_token: character varying, Nullable: YES, Default: None
+  - phone_number: character varying, Nullable: YES, Default: None
+  - gender: character varying, Nullable: YES, Default: None
+  - profile_picture_url: text, Nullable: YES, Default: None
+  - address_line_1: text, Nullable: YES, Default: None
+
+Table: transactions
+  - value_datetime: timestamp without time zone, Nullable: YES, Default: None
+  - transaction_amount: numeric, Nullable: YES, Default: None
+  - fx_rate: numeric, Nullable: YES, Default: None
+  - account_currency_amount: numeric, Nullable: YES, Default: None
+  - booking_datetime: timestamp without time zone, Nullable: YES, Default: None
+  - transaction_id: uuid, Nullable: NO, Default: None
+  - credit_debit_indicator: character varying, Nullable: YES, Default: None
+  - transaction_type: character varying, Nullable: YES, Default: None
+  - transaction_currency: character varying, Nullable: YES, Default: None
+  - account_currency: character varying, Nullable: YES, Default: None
+  - status: character varying, Nullable: YES, Default: None
+  - merchant_category_code: character varying, Nullable: YES, Default: None
+  - merchant_name: character varying, Nullable: YES, Default: None
+  - merchant_address: text, Nullable: YES, Default: None
+  - merchant_postal_code: character varying, Nullable: YES, Default: None
+  - merchant_city: character varying, Nullable: YES, Default: None
+  - merchant_country: character varying, Nullable: YES, Default: None
+  - category: character varying, Nullable: YES, Default: None
+  - category_purpose_code: character varying, Nullable: YES, Default: None
+  - business_category_codes: character varying, Nullable: YES, Default: None
+  - msic: character varying, Nullable: YES, Default: None
+  - biller_code: character varying, Nullable: YES, Default: None
+  - biller_code_name: character varying, Nullable: YES, Default: None
+  - creditor_bic: character varying, Nullable: YES, Default: None
+  - creditor_agent_name: character varying, Nullable: YES, Default: None
+  - creditor_account_number: character varying, Nullable: YES, Default: None
+  - creditor_account_name: character varying, Nullable: YES, Default: None
+  - debitor_bic: character varying, Nullable: YES, Default: None
+  - debitor_agent_name: character varying, Nullable: YES, Default: None
+  - debitor_account_number: character varying, Nullable: YES, Default: None
+  - debitor_name: character varying, Nullable: YES, Default: None
+  - account_id: character varying, Nullable: NO, Default: None
+  - bic_code: character varying, Nullable: YES, Default: None
+  - account_number: character varying, Nullable: YES, Default: None
+  - account_type: character varying, Nullable: YES, Default: None
+  - payment_scheme: character varying, Nullable: YES, Default: None
+
+Table: accounts
+  - user_id: integer, Nullable: YES, Default: None
+  - bic_code: character varying, Nullable: NO, Default: None
+  - provider_type: character varying, Nullable: NO, Default: None
+  - account_number: character varying, Nullable: NO, Default: None
+  - account_type: character varying, Nullable: NO, Default: None
+  - account_description: character varying, Nullable: NO, Default: None
+  - account_holder_full_name: character varying, Nullable: NO, Default: None
+  - account_id: character varying, Nullable: NO, Default: None
+  - id_value: character varying, Nullable: NO, Default: None
+  - account_holder_email_address: character varying, Nullable: YES, Default: None
+  - account_holder_mobile_number: character varying, Nullable: YES, Default: None
+  - product_type: character varying, Nullable: NO, Default: None
+  - sharia_compliance: character varying, Nullable: NO, Default: None
+  - id_type: character varying, Nullable: NO, Default: None
+
+Table: balances
+  - maturity_date: date, Nullable: YES, Default: None
+  - repayment_due_date: date, Nullable: YES, Default: None
+  - repayment_amount_due: numeric, Nullable: YES, Default: None
+  - account_detail_id: integer, Nullable: NO, Default: nextval('balances_account_detail_id_seq'::regclass)
+  - account_balance_datetime: timestamp without time zone, Nullable: NO, Default: None
+  - outstanding_balance: numeric, Nullable: YES, Default: None
+  - pending_balance: numeric, Nullable: YES, Default: None
+  - available_balance: numeric, Nullable: YES, Default: None
+  - credit_limit: numeric, Nullable: YES, Default: None
+  - account_id: character varying, Nullable: NO, Default: None
+  - repayment_frequency: character varying, Nullable: YES, Default: None
+  - account_currency: character varying, Nullable: NO, Default: None

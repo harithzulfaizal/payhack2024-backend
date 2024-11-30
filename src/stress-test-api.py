@@ -3,12 +3,23 @@ from pydantic import BaseModel
 from sqlalchemy import create_engine, Column, Integer, Numeric, String, DateTime, func
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
+from sqlalchemy.dialects.postgresql import JSON
 
 # Database connection parameters
 conn_params = "postgresql://neondb_owner:CG4zi5OygUKb@ep-flat-band-a1icda59.ap-southeast-1.aws.neon.tech/neondb?sslmode=require"
 engine = create_engine(conn_params)
 SessionLocal = sessionmaker(bind=engine)
 Base = declarative_base()
+
+# SQLAlchemy model for the 'stress_test_results' table
+class StressTestResults(Base):
+    __tablename__ = 'stress_test_results'
+
+    id = Column(Integer, primary_key=True)
+    user_id = Column(Integer, nullable=False)
+    stress_test_id = Column(Integer, nullable=False)
+    result = Column(JSON, nullable=False)
+    created_at = Column(DateTime, server_default=func.now(), nullable=True)
 
 # SQLAlchemy model for the 'stress_test_parameters' table
 class StressTestParameters(Base):
@@ -180,7 +191,34 @@ def get_stress_test_parameters(user_id: int):
     finally:
         session.close()
 
+# Endpoint to retrieve stress test results by user_id
+@app.get("/stress-test-results/{user_id}")
+def get_stress_test_result(user_id: int):
+    session = SessionLocal()
+    try:
+        # Query the database for stress test results by user_id
+        results = session.query(StressTestResults).filter(StressTestResults.user_id == user_id).all()
+        if not results:
+            raise HTTPException(status_code=404, detail="Stress test results not found")
+        
+        # Serialize results into JSON-friendly format
+        result_data = []
+        for result in results:
+            result_data.append({
+                "id": result.id,
+                "user_id": result.user_id,
+                "stress_test_id": result.stress_test_id,
+                "result": result.result,  # This is already JSON
+                "created_at": result.created_at,
+            })
+        
+        return {"stress_test_results": result_data}
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=str(e))
+    finally:
+        session.close()
+
 # Run the app
 if __name__ == '__main__':
     import uvicorn
-    uvicorn.run("stress-test-parameters:app", host="127.0.0.1", port=8000, reload=True)
+    uvicorn.run("stress-test-api:app", host="127.0.0.1", port=8000, reload=True)

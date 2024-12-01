@@ -1,7 +1,7 @@
 import os
 import google.generativeai as genai
 
-genai.configure(api_key="AIzaSyAJdBjPk2VgssPnBf5OhgXvCxQ2xFdA1Ng")
+genai.configure(api_key="<insert_api_key>")
 
 async def get_completions(system_prompt, text):
     # Create the model
